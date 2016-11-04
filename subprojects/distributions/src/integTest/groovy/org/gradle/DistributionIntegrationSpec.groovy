@@ -33,7 +33,6 @@ abstract class DistributionIntegrationSpec extends AbstractIntegrationSpec {
 
     @Rule public final PreconditionVerifier preconditionVerifier = new PreconditionVerifier()
 
-    @Shared String version = GradleVersion.current().version
     @Shared String baseVersion = GradleVersion.current().baseVersion.version
 
     abstract String getDistributionLabel()
@@ -90,12 +89,12 @@ abstract class DistributionIntegrationSpec extends AbstractIntegrationSpec {
     protected TestFile unpackDistribution(type = getDistributionLabel()) {
         TestFile zip = getZip(type)
         zip.usingNativeTools().unzipTo(testDirectory)
-        TestFile contentsDir = file("gradle-$version")
-        contentsDir
+        assert testDirectory.listFiles().size() == 1
+        testDirectory.listFiles()[0]
     }
 
     protected TestFile getZip(String type = getDistributionLabel()) {
-        buildContext.distributionsDir.file("gradle-$version-${type}.zip")
+        buildContext.distributionsDir.file("gradle-$baseVersion-${type}.zip")
     }
 
     protected void checkMinimalContents(TestFile contentsDir) {
